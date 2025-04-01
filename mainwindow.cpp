@@ -49,6 +49,7 @@ void MainWindow::on_pushButton_2_clicked()
     ui->lineEdit_3->clear();
     ui->lineEdit_4->clear();
     ui->lineEdit_5->clear();
+    ui->lineEdit_6->clear();
 }
 
 int MainWindow::Ackermann_rec(int m, int n) {
@@ -87,7 +88,16 @@ int MainWindow::Ackermann_cycle(int m, int n) {
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    int m {3};
+    ui->lineEdit_5->clear();
+
+    QString a = ui->lineEdit_6->text();
+    int m = a.toInt();
+    if(m < 0)
+    {
+        ui->lineEdit_5->setText("Введено m < 0");
+        return;
+    }
+
     QVector<double> N {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
     QVector<double> time_rec {};
     QVector<double> time_cycle {};
@@ -95,16 +105,35 @@ void MainWindow::on_pushButton_3_clicked()
     for(int i = 0; i < N.size(); i++)
     {
         clock_t start_one = clock();
-        Ackermann_rec(m, static_cast<int>(N[i]));
+        for(int j = 0; j < 3; j++)
+        {
+            Ackermann_rec(m, static_cast<int>(N[i]));
+        }
         clock_t end_one = clock();
-        double result_one = (double(end_one - start_one) / CLOCKS_PER_SEC) * 1000; // milliseconds
+        double result_one = (double(end_one - start_one) / CLOCKS_PER_SEC) * 1000 / 3; // milliseconds
         time_rec.push_back(result_one);
 
         clock_t start_two = clock();
-        Ackermann_cycle(m, static_cast<int>(N[i]));
+        for(int j = 0; j < 3; j++)
+        {
+            Ackermann_cycle(m, static_cast<int>(N[i]));
+        }
         clock_t end_two = clock();
-        double result_two = (double(end_two - start_two) / CLOCKS_PER_SEC) * 1000; // milliseconds
+        double result_two = (double(end_two - start_two) / CLOCKS_PER_SEC) * 1000 / 3; // milliseconds
         time_cycle.push_back(result_two);
+    }
+
+    double max = time_cycle[0];
+    for(int i = 0; i < time_cycle.size(); i++)
+    {
+        if(time_cycle[i] > max)
+        {
+            max = time_cycle[i];
+        }
+        if(time_rec[i] > max)
+        {
+            max = time_rec[i];
+        }
     }
 
     ui->widget->clearGraphs();
@@ -116,10 +145,10 @@ void MainWindow::on_pushButton_3_clicked()
     ui->widget->graph(1)->setData(N, time_cycle);
     ui->widget->graph(1)->setPen(QColor(50, 50, 250, 255));
     ui->widget->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::red, Qt::white, 5));
-    ui->widget->xAxis->setLabel("n, m=3");
+    ui->widget->xAxis->setLabel("n");
     ui->widget->yAxis->setLabel("t, ms");
-    ui->widget->xAxis->setRange(0, 12);
-    ui->widget->yAxis->setRange(0, 5000);
+    ui->widget->xAxis->setRange(0, N.size()+1);
+    ui->widget->yAxis->setRange(0, max+0.1*max);
     ui->widget->replot();
 }
 
