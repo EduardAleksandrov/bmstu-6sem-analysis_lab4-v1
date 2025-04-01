@@ -66,18 +66,22 @@ int MainWindow::Ackermann_rec(int m, int n) {
 int MainWindow::Ackermann_cycle(int m, int n) {
     std::stack<int> s;
     s.push(m);
-    while(!s.empty()) {
+    while(!s.empty())
+    {
         m = s.top();
         s.pop();
-        if(m == 0) {
+        if(m == 0)
+        {
             n++;
         }
-        else if(n == 0) {
+        else if(n == 0)
+        {
             s.push(--m);
             n = 1;
         }
-        else {
-            s.push(m-1);
+        else
+        {
+            s.push(m - 1);
             s.push(m);
             n--;
         }
@@ -143,7 +147,7 @@ void MainWindow::on_pushButton_3_clicked()
     ui->widget->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::blue, Qt::white, 5));
     ui->widget->addGraph();
     ui->widget->graph(1)->setData(N, time_cycle);
-    ui->widget->graph(1)->setPen(QColor(50, 50, 250, 255));
+    ui->widget->graph(1)->setPen(QColor(250, 50, 50, 255));
     ui->widget->graph(1)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, Qt::red, Qt::white, 5));
     ui->widget->xAxis->setLabel("n");
     ui->widget->yAxis->setLabel("t, ms");
